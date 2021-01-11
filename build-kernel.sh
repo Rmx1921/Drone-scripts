@@ -103,72 +103,14 @@ elif [[ "$@" =~ "proton"* ]]; then
 		O=${OUT_DIR} \
 		RMX1921_defconfig \
 		-j${KEBABS}
-	fi
-
-	# Make olddefconfig
-	cd ${OUT_DIR}
-	make O=${OUT_DIR} \
-		ARCH=arm64 \
-		olddefconfig \
-		-j${KEBABS}
-	cd ../
+		
 	# Set compiler Path
 	PATH=${HOME}/clang/bin/:$PATH
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
 		CC="clang" \
-		LD="ld.lld" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		HOSTCC="clang" \
-		HOSTLD="ld.lld" \
-		HOSTCXX="clang++" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		READELF="llvm-readelf" \
 		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-		-j${KEBABS}
-else
-	# Make defconfig
-	make ARCH=arm64 \
-		O=${OUT_DIR} \
-		raphael_defconfig \
-		-j${KEBABS}
-	# Enable LLD
-	scripts/config --file ${OUT_DIR}/.config \
-		-d LTO \
-		-d LTO_CLANG \
-		-d SHADOW_CALL_STACK \
-		-e TOOLS_SUPPORT_RELR \
-		-e LD_LLD
-	# Make olddefconfig
-	cd ${OUT_DIR}
-	make O=${OUT_DIR} \
-		ARCH=arm64 \
-		olddefconfig \
-		-j${KEBABS}
-	cd ../
-	# Set compiler Path
-	PATH=${HOME}/clang/bin/:$PATH
-	make ARCH=arm64 \
-		O=${OUT_DIR} \
-		CC="clang" \
-		LD="ld.lld" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		HOSTCC="clang" \
-		HOSTLD="ld.lld" \
-		HOSTCXX="clang++" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		READELF="llvm-readelf" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
-		CROSS_COMPILE="aarch64-linux-gnu-" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		-j${KEBABS}
 fi
 
