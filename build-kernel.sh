@@ -31,8 +31,8 @@ else
 	export COMPILER="ProtonClang-12.0"
 fi
 # Export Build username
-export KBUILD_BUILD_USER="UtsavTheCunt"
-export KBUILD_BUILD_HOST="CuntsSpace"
+export KBUILD_BUILD_USER="Viciouspup"
+export KBUILD_BUILD_HOST="Vroot"
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
