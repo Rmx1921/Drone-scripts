@@ -56,21 +56,6 @@ export ZIPNAME="${VERSION}.zip"
 if [[ -z "${KEBABS}" ]]; then
 	COUNT="$(grep -c '^processor' /proc/cpuinfo)"
 	export KEBABS="$((COUNT * 2))"
-fi
-
-# Post to CI channel
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="<code>IMMENS1TY-X</code>
-Build: <code>${TYPE}</code>
-Device: <code>XiaoMi Redmi K20 Pro (raphael)</code>
-Compiler: <code>${COMPILER}</code>
-Branch: <code>$(git rev-parse --abbrev-ref HEAD)</code>
-Commit: <code>$MESSAGE</code>
-<i>Build started on Drone Cloud...</i>
-Check the build status here: https://cloud.drone.io/UtsavBalar1231/kernel_xiaomi_raphael/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
-
-START=$(date +"%s")
 # BenzoClang
 if [[ "$@" =~ "benzoclang"* ]]; then
 	# Make defconfig
