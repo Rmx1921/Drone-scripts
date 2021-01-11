@@ -110,6 +110,7 @@ elif [[ "$@" =~ "proton"* ]]; then
 		O=${OUT_DIR} \
 		CC="clang" \
 		CLANG_TRIPLE="aarch64-linux-gnu-" \
+		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		-j${KEBABS}
 else
@@ -137,6 +138,7 @@ else
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
 		CC="clang" \
+		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		-j${KEBABS}
 fi
