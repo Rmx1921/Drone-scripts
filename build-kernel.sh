@@ -109,19 +109,8 @@ elif [[ "$@" =~ "proton"* ]]; then
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
 		CC="clang" \
-		LD="ld.lld" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		HOSTCC="clang" \
-		HOSTLD="ld.lld" \
-		HOSTCXX="clang++" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		READELF="llvm-readelf" \
 		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		-j${KEBABS}
 else
 	# Make defconfig
@@ -148,19 +137,7 @@ else
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
 		CC="clang" \
-		LD="ld.lld" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		HOSTCC="clang" \
-		HOSTLD="ld.lld" \
-		HOSTCXX="clang++" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		READELF="llvm-readelf" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		-j${KEBABS}
 fi
 
