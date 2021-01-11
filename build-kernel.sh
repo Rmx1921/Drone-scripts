@@ -101,25 +101,8 @@ elif [[ "$@" =~ "proton"* ]]; then
 	# Make defconfig
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
-		raphael_defconfig \
+		RMX1921_defconfig \
 		-j${KEBABS}
-	if [[ "$@" =~ "lto"* ]]; then
-		# Enable LTO
-		scripts/config --file ${OUT_DIR}/.config \
-			-e LTO \
-			-e LTO_CLANG \
-			-d THINLTO \
-			-d SHADOW_CALL_STACK \
-			-e TOOLS_SUPPORT_RELR \
-			-e LD_LLD
-	else
-		# Enable LLD
-		scripts/config --file ${OUT_DIR}/.config \
-			-d LTO \
-			-d LTO_CLANG \
-			-d SHADOW_CALL_STACK \
-			-e TOOLS_SUPPORT_RELR \
-			-e LD_LLD
 	fi
 
 	# Make olddefconfig
