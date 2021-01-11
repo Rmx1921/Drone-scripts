@@ -192,20 +192,10 @@ fi
 END=$(date +"%s")
 DIFF=$(( END - START))
 
-# Import Anykernel3 folder
-cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel/
-cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
+# Kernel uploading
+cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
+curl curl --upload-file Image.gz-dtb https://transfer.sh/Image.gz-dtb
 
-cd anykernel
-zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
-CHECKER=$(ls -l ${ZIPNAME} | awk '{print $5}')
-if (($((CHECKER / 1048576)) > 5)); then
-	curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for Raphael" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
-	curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot${BOT_API_KEY}/sendDocument
-else
-	curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Error in build!!" -d chat_id=${CI_CHANNEL_ID}
-	exit 1;
-fi
 cd $(pwd)
 
 # Cleanup
