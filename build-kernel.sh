@@ -112,7 +112,6 @@ elif [[ "$@" =~ "proton"* ]]; then
 		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		-j${KEBABS}
-fi
 
 END=$(date +"%s")
 DIFF=$(( END - START))
