@@ -143,9 +143,6 @@ else
 		-j${KEBABS}
 fi
 
-END=$(date +"%s")
-DIFF=$(( END - START))
-
 # Import Anykernel3 folder
 cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
 
