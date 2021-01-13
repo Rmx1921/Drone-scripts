@@ -152,6 +152,6 @@ else
 fi
 cd $(pwd)
 ls
-
+pwd
 # Cleanup
 rm -fr anykernel/
