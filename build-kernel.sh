@@ -150,7 +150,7 @@ cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
 else
 	exit 1;
 fi
-cd $(pwd)
+cd /drone/src
 ls
 pwd
 # Cleanup
