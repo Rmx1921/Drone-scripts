@@ -150,8 +150,10 @@ cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
 else
 	exit 1;
 fi
-cd /drone/src
-ls
+cd /drone/srcutils/libufdt-master-utils/src
+python mkdtboimg.py create /home/user/davinci-p-oss/out/arch/arm64/boot/dtbo.img
+cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
+curl --upload-file dtbo.img https://transfer.sh/dtbo.img
 pwd
 # Cleanup
 rm -fr anykernel/
