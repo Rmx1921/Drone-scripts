@@ -19,8 +19,8 @@
 cd /drone/src/
 
 # dtbo files
-wget https://android.googlesource.com/platform/system/libufdt/+archive/master/utils.tar.gz
-tar vxzf libufdt-master-utils.tar.gz
+git clone https://github.com/viciouspup/libufdt-master-utils.git libufdt-master-utils
+
 # clone benzoclang-12.0
 if [[ "$@" =~ "benzoclang"* ]]; then
 	git clone https://github.com/lineageos/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 --depth=1 -b lineage-17.1 arm64-gcc
