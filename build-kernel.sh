@@ -150,10 +150,6 @@ cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
 else
 	exit 1;
 fi
-cd /drone/src/libufdt-master-utils/src
-python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/sdm710.
-cd /drone/src/out/arch/arm64/boot/
-curl --upload-file dtbo.img https://transfer.sh/dtbo.img
-pwd
+cd /drone/src/
 # Cleanup
 rm -fr anykernel/
