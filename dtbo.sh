@@ -19,12 +19,12 @@
 
 cd /drone/src/libufdt-master-utils/src
 
-fi
-python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
+
+python drone/src/libufdt-master-utils/src/mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
 
 cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
 
 curl --upload-file dtbo.img https://transfer.sh/dtbo.img
 
-else
-exit 1;
+
+
