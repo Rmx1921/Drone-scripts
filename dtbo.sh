@@ -24,8 +24,9 @@ python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/ou
 
 cd ..
 cd ..
+pwd
 cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
-ls
+
 curl --upload-file dtbo.img https://transfer.sh/dtbo.img
 
 
