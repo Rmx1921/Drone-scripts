@@ -164,3 +164,15 @@ cd ..
 cd ..
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/Builds/
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/Builds/
+
+cd Builds
+curl --upload-file Image.gz-dtb https://transfer.sh/Image.gz-dtb
+curl --upload-file dtbo.img https://transfer.sh/dtbo.img
+else
+	
+	exit 1;
+fi
+cd $(pwd)
+
+# Cleanup
+rm -fr anykernel/
