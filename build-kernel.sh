@@ -157,9 +157,12 @@ fi
 
 END=$(date +"%s")
 DIFF=$(( END - START))
-
-
+ cd libufdt-master-utils/src
+python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
+cd ..
+cd ..
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/Builds/
+cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/Builds/
 
 cd Builds
 curl --upload-file Image.gz-dtb https://transfer.sh/Image.gz-dtb
