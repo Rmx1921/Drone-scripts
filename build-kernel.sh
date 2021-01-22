@@ -164,4 +164,5 @@ else
 fi
 cd /drone/src/
 # Cleanup
+cd src
 ls
