@@ -164,4 +164,4 @@ else
 fi
 cd /drone/src/
 # Cleanup
-rm -fr anykernel/
+ls
