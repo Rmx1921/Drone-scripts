@@ -32,7 +32,7 @@ else
 fi
 # Export Build username
 export KBUILD_BUILD_USER="Viciouspup"
-export KBUILD_BUILD_HOST="Vroot"
+export KBUILD_BUILD_HOST="root"
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
@@ -155,20 +155,12 @@ else
 		-j${KEBABS}
 fi
 
-# Import Anykernel3 folder
-cd $(pwd)/${OUT_DIR}/arch/arm64/boot/
+END=$(date +"%s")
+DIFF=$(( END - START))
 
-	curl --upload-file Image.gz-dtb https://transfer.sh/Image.gz-dtb
-else
-	exit 1;
-fi
-cd /drone/src/
-# Cleanup
 cd libufdt-master-utils/src
 python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
 cd ..
 cd ..
-
-cd /$(pwd)/${OUT_DIR}/arch/arm64/boot
-ls
-curl --upload-file dtbo.img https://transfer.sh/dtbo.img
+cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/Builds/
+cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/Builds/
