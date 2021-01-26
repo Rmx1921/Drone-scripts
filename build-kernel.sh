@@ -44,7 +44,7 @@ else
 	VERSION="IMMENSiTY-X-RAPHAEL-${TYPE}-${DRONE_BUILD_NUMBER}-${DATE}"
 fi
 BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-KERNEL_LINK=https://GitHub.com/UtsavBalar1231/kernel_xiaomi_raphael
+KERNEL_LINK=https://github.com/viciouspup/kernel_realme_sdm710.git
 REF=`echo "$BRANCH" | grep -Eo "[^ /]+\$"`
 AUTHOR=`git log $BRANCH -1 --format="%an"`
 COMMIT=`git log $BRANCH -1 --format="%h / %s"`
