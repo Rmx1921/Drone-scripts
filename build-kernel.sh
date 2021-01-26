@@ -39,9 +39,9 @@ DATE=$(date +"%d.%m.%y")
 HOME="/drone/src/"
 OUT_DIR=out/
 if [[ "$@" =~ "lto"* ]]; then
-	VERSION="IMMENSiTY-X-RAPHAEL-${TYPE}-LTO${DRONE_BUILD_NUMBER}-${DATE}"
+	VERSION="SPIRA-${TYPE}-LTO${DRONE_BUILD_NUMBER}-${DATE}"
 else
-	VERSION="IMMENSiTY-X-RAPHAEL-${TYPE}-${DRONE_BUILD_NUMBER}-${DATE}"
+	VERSION="SPIRAL-${TYPE}-${DRONE_BUILD_NUMBER}-${DATE}"
 fi
 BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 KERNEL_LINK=https://github.com/viciouspup/kernel_realme_sdm710.git
