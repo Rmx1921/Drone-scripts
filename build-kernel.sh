@@ -59,7 +59,7 @@ if [[ -z "${KEBABS}" ]]; then
 fi
 
 # Post to CI channel
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
+#curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
 curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="<code>SPIRAL</code>
 Build: <code>${TYPE}</code>
 Device: <code>Realme XT(RMX1921)</code>
