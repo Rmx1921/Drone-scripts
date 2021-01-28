@@ -16,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+fi
 git fetch https://github.com/android-linux-stable/msm-4.14.git kernel.lnx.4.14.r1
 git checkout -b linux FETCH_HEAD
 git push --set-upstream origin linux
+
+enif
