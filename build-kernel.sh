@@ -145,7 +145,7 @@ else
 	cd ${OUT_DIR}
 	make O=${OUT_DIR} \
 		ARCH=arm64 \
-		silentoldconfig \
+		RMX1921_defconfig \
 		-j${KEBABS}
 	cd ../
 	# Set compiler Path
