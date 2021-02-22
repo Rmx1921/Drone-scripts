@@ -20,7 +20,7 @@ cd /drone/src/
 
 # Anykernel
 git clone https://github.com/viciouspup/Anykernel.git anykernel
-#git clone https://github.com/viciouspup/libufdt-master-utils.git libufdt-master-utils
+git clone https://github.com/viciouspup/libufdt-master-utils.git libufdt-master-utils
 
 # clone benzoclang-12.0
 if [[ "$@" =~ "benzoclang"* ]]; then
