@@ -178,7 +178,7 @@ python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/ou
 cd ..
 cd ..
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel/
-#cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
+cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
 
 cd anykernel
 zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
