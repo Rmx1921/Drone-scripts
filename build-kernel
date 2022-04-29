@@ -136,7 +136,7 @@ else
 		-j${KEBABS}
 	# Enable LLD
 	scripts/config --file ${OUT_DIR}/.config \
-		-d LTO \
+		-e LTO \
 		-d LTO_CLANG \
 		-d SHADOW_CALL_STACK \
 		-e TOOLS_SUPPORT_RELR \
