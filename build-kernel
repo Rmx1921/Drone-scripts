@@ -173,7 +173,7 @@ fi
 END=$(date +"%s")
 DIFF=$(( END - START))
 # Import Anykernel3 folder
-cd libufdt-master-utils/src
+# cd libufdt-master-utils/src
 python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
 cd ..
 cd ..
