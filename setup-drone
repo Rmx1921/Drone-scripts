@@ -28,7 +28,7 @@ if [[ "$@" =~ "benzoclang"* ]]; then
 	git clone https://github.com/lineageos/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9 --depth=1 -b lineage-17.1 arm32-gcc
 	git clone https://github.com/BenzoRom/benzoclang-12.0 --depth=1 clang
 elif [[ "$@" =~ "proton"* ]]; then
-	git clone https://github.com/kdrag0n/proton-clang -b main --depth=1 clang
+	git clone https://github.com/kdrag0n/proton-clang -b master --depth=1 clang
 else
-        git clone https://github.com/kdrag0n/proton-clang -b main --depth=1 clang
+        git clone https://github.com/kdrag0n/proton-clang -b master --depth=1 clang
 fi
