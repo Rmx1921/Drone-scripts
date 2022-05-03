@@ -159,7 +159,6 @@ elif [[ "$@" =~ "proton"* ]]; then
 		OBJCOPY="llvm-objcopy" \
 		OBJDUMP="llvm-objdump" \
 		READELF="llvm-readelf" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		-j${KEBABS}
