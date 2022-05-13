@@ -141,13 +141,6 @@ elif [[ "$@" =~ "proton"* ]]; then
 			-e LD_LLD
 	fi
 
-	# Make olddefconfig
-	cd ${OUT_DIR}
-	make O=${OUT_DIR} \
-		ARCH=arm64 \
-		RMX1921_defconfig \
-		-j${KEBABS}
-	cd ../
 	# Set compiler Path
 	PATH=${HOME}/clang/bin/:$PATH
 	make ARCH=arm64 \
@@ -179,13 +172,7 @@ else
 		-d SHADOW_CALL_STACK \
 		-e TOOLS_SUPPORT_RELR \
 		-e LD_LLD
-	# Make olddefconfig
-	cd ${OUT_DIR}
-	make O=${OUT_DIR} \
-		ARCH=arm64 \
-		RMX1921_defconfig \
-		-j${KEBABS}
-	cd ../
+		
 	# Set compiler Path
 	PATH=${HOME}/clang/bin/:$PATH
 	make ARCH=arm64 \
