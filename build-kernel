@@ -36,7 +36,7 @@ export KBUILD_BUILD_HOST="root"
 export ARCH="arm64"
 export CC="clang"
 export SUBARCH="arm64"
-export PATH="$HOME/clang/bin:$PATH"
+
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
