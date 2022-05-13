@@ -23,16 +23,20 @@ if [[ "$@" =~ "benzoclang"* ]]; then
 	export COMPILER="BenzoClang-12.0"
 elif [[ "$@" =~ "proton"* ]]; then
 	if [[ "$@" =~ "lto"* ]]; then
-		export COMPILER="ProtonClang-12.0 LTO"
+		export COMPILER="LolzClang-15.0 LTO"
 	else
-		export COMPILER="ProtonClang-12.0"
+		export COMPILER="LolzClang-15.0"
 	fi
 else
-	export COMPILER="ProtonClang-12.0"
+	export COMPILER="LolzClang-15.0"
 fi
 # Export Build username
 export KBUILD_BUILD_USER="Viciouspup"
 export KBUILD_BUILD_HOST="root"
+export ARCH="arm64"
+export CC="clang"
+export SUBARCH="arm64"
+export PATH="$HOME/clang/bin:$PATH"
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
@@ -197,7 +201,6 @@ else
 		OBJCOPY="llvm-objcopy" \
 		OBJDUMP="llvm-objdump" \
 		READELF="llvm-readelf" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
 		CROSS_COMPILE="aarch64-linux-gnu-" \
 		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
 		-j${KEBABS}
