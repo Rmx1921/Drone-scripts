@@ -145,7 +145,7 @@ elif [[ "$@" =~ "proton"* ]]; then
 	cd ${OUT_DIR}
 	make O=${OUT_DIR} \
 		ARCH=arm64 \
-		olddefconfig \
+		RMX1921_defconfig \
 		-j${KEBABS}
 	cd ../
 	# Set compiler Path
