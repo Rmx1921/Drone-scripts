@@ -25,14 +25,14 @@ elif [[ "$@" =~ "proton"* ]]; then
 	if [[ "$@" =~ "lto"* ]]; then
 		export COMPILER="ProtonClang-12.0 LTO"
 	else
-		export COMPILER="ProtonClang-12.0"
+		export COMPILER="ProtonClang-15.0"
 	fi
 else
-	export COMPILER="ProtonClang-12.0"
+	export COMPILER="ProtonClang-15.0"
 fi
 # Export Build username
 export KBUILD_BUILD_USER="Viciouspup"
-export KBUILD_BUILD_HOST="root"
+export KBUILD_BUILD_HOST="DroneCI"
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
