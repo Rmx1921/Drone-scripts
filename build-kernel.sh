@@ -21,17 +21,16 @@ cd /drone/src/ || exit
 
 HOME="/drone/src"
 
-if [[ "$@" =~ "benzoclang"* ]]; then
-	export COMPILER="BenzoClang-12.0"
-elif [[ "$@" =~ "proton"* ]]; then
-	if [[ "$@" =~ "lto"* ]]; then
-		export COMPILER="ProtonClang-13.0 LTO"
-	else
-		export COMPILER="ProtonClang-13.0"
-	fi
+if [[ "$@" =~ "gcc"* ]]; then
+    KBUILD_COMPILER_STRING=$(${HOME}/gcc64/bin/aarch64-elf-gcc --version | head -n1 | sed -e 's/aarch64-elf-gcc\ //' | perl -pe 's/\(//gs' | perl -pe 's/\)//gs')
+    KBUILD_LINKER_STRING=$(${HOME}/gcc64/bin/aarch64-elf-ld --version | head -n1 | perl -pe 's/\(//gs' | perl -pe 's/\)//gs')
 else
-	export COMPILER="ProtonClang-13.0"
+    KBUILD_COMPILER_STRING=$(${HOME}/clang/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+    KBUILD_LINKER_STRING=$(${HOME}/clang/bin/ld.lld --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//' | sed 's/(compatible with [^)]*)//')
 fi
+
+export KBUILD_COMPILER_STRING
+export KBUILD_LINKER_STRING
 
 #
 # Enviromental Variables
@@ -52,11 +51,34 @@ KERNELVER=$(make kernelversion)
 # Set our directory
 OUT_DIR=out/
 
+if [[ "$@" =~ "gcc"* ]]; then
+    VERSION=$(echo "${KBUILD_COMPILER_STRING}" | awk '{print $1,$2,$3}')
+elif [[ "$@" =~ "aosp-clang"* ]]; then
+    if [[ -f ${HOME}/clang/AndroidVersion.txt ]]; then
+        VERSION=$(cat ${HOME}/clang/AndroidVersion.txt | head -1)
+    fi
+else
+    VERSION=""
+fi
+export VERSION
+
+# Set Compiler
+if [[ "$@" =~ "gcc"* ]]; then
+    COMPILER=${VERSION}
+elif [[ "$@" =~ "aosp-clang"* ]]; then
+    COMPILER="AOSP Clang ${VERSION}"
+else
+    COMPILER="Proton Clang ${VERSION}"
+fi
+export COMPILER
+
+CSUM=$(cksum <<<${COMMIT} | cut -f 1 -d ' ')
+
 # Select LTO or non LTO builds
 if [[ "$@" =~ "lto"* ]]; then
-    VERSION="Spiral-${DEVICE^^}-${TYPE}-LTO-${CSUM}-${DATE}"
+    VERSION="IMMENSITY-X-${DEVICE^^}-${TYPE}-LTO-${CSUM}-${DATE}"
 else
-    VERSION="Spiral-${DEVICE^^}-${TYPE}-${CSUM}-${DATE}"
+    VERSION="IMMENSITY-X-${DEVICE^^}-${TYPE}-${CSUM}-${DATE}"
 fi
 
 # Export Zip name
@@ -68,36 +90,85 @@ if [[ -z "${KEBABS}" ]]; then
     export KEBABS="$((COUNT * 2))"
 fi
 
-if [[ "$@" =~ "proton"* ]]; then
+if [[ "$@" =~ "gcc"* ]]; then
     ARGS="ARCH=arm64 \
-		O=${OUT_DIR} \
-		CC="clang" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-		CROSS_COMPILE="aarch64-linux-gnu-" \
-		-j${KEBABS}
+    O=${OUT_DIR} \
+    CROSS_COMPILE=aarch64-elf- \
+    CROSS_COMPILE_COMPAT=arm-eabi- \
+    -j${KEBABS}
     "
 else
     ARGS="ARCH=arm64 \
-		O=${OUT_DIR} \
-		CC="clang" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		LD="ld.lld" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		OBJSIZE="llvm-size" \
-		READELF="llvm-readelf" \
-		HOSTCC="clang" \
-		HOSTCXX="clang++" \
-		HOSTAR="llvm-ar" \
-		HOSTLD="ld.lld" \
-		CROSS_COMPILE_ARM32="arm-linux-gnueabi-" \
-		CROSS_COMPILE="aarch64-linux-gnu-" \
-		-j${KEBABS}
+    O=${OUT_DIR} \
+    LLVM=1 \
+    CLANG_TRIPLE=aarch64-linux-gnu- \
+    CROSS_COMPILE=aarch64-linux-gnu- \
+    CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+    -j${KEBABS}
 "
+#    LLVM_IAS=1 \
+fi
 
+dts_source=arch/arm64/boot/dts/vendor/qcom
+# Correct panel dimensions on MIUI builds
+function miui_fix_dimens() {
+    sed -i 's/<154>/<1537>/g' $dts_source/dsi-panel-j1s*
+    sed -i 's/<154>/<1537>/g' $dts_source/dsi-panel-j2*
+    sed -i 's/<155>/<1544>/g' $dts_source/dsi-panel-j3s-37-02-0a-dsc-video.dtsi
+    sed -i 's/<155>/<1545>/g' $dts_source/dsi-panel-j11-38-08-0a-fhd-cmd.dtsi
+    sed -i 's/<155>/<1546>/g' $dts_source/dsi-panel-k11a-38-08-0a-dsc-cmd.dtsi
+    sed -i 's/<155>/<1546>/g' $dts_source/dsi-panel-l11r-38-08-0a-dsc-cmd.dtsi
+    sed -i 's/<70>/<695>/g' $dts_source/dsi-panel-j11-38-08-0a-fhd-cmd.dtsi
+    sed -i 's/<70>/<695>/g' $dts_source/dsi-panel-j3s-37-02-0a-dsc-video.dtsi
+    sed -i 's/<70>/<695>/g' $dts_source/dsi-panel-k11a-38-08-0a-dsc-cmd.dtsi
+    sed -i 's/<70>/<695>/g' $dts_source/dsi-panel-l11r-38-08-0a-dsc-cmd.dtsi
+    sed -i 's/<71>/<710>/g' $dts_source/dsi-panel-j1s*
+    sed -i 's/<71>/<710>/g' $dts_source/dsi-panel-j2*
+}
+
+# Enable back mi smartfps while disabling qsync min refresh-rate
+function miui_fix_fps() {
+    sed -i 's/qcom,mdss-dsi-qsync-min-refresh-rate/\/\/qcom,mdss-dsi-qsync-min-refresh-rate/g' $dts_source/dsi-panel*
+    sed -i 's/\/\/ mi,mdss-dsi-smart-fps-max_framerate/mi,mdss-dsi-smart-fps-max_framerate/g' $dts_source/dsi-panel*
+    sed -i 's/\/\/ mi,mdss-dsi-pan-enable-smart-fps/mi,mdss-dsi-pan-enable-smart-fps/g' $dts_source/dsi-panel*
+    sed -i 's/\/\/ qcom,mdss-dsi-pan-enable-smart-fps/qcom,mdss-dsi-pan-enable-smart-fps/g' $dts_source/dsi-panel*
+}
+
+# Enable back refresh rates supported on MIUI
+function miui_fix_dfps() {
+    sed -i 's/120 90 60/120 90 60 50 30/g' $dts_source/dsi-panel-g7a-37-02-0a-dsc-video.dtsi
+    sed -i 's/120 90 60/120 90 60 50 30/g' $dts_source/dsi-panel-g7a-37-02-0b-dsc-video.dtsi
+    sed -i 's/120 90 60/120 90 60 50 30/g' $dts_source/dsi-panel-g7a-36-02-0c-dsc-video.dtsi
+    sed -i 's/144 120 90 60/144 120 90 60 50 48 30/g' $dts_source/dsi-panel-j3s-37-02-0a-dsc-video.dtsi
+}
+
+# Enable back brightness control from dtsi
+function miui_fix_fod() {
+    sed -i 's/\/\/39 00 00 00 00 00 03 51 03 FF/39 00 00 00 00 00 03 51 03 FF/g' $dts_source/dsi-panel-j9-38-0a-0a-fhd-video.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 03 51 0D FF/39 00 00 00 00 00 03 51 0D FF/g' $dts_source/dsi-panel-j2-p2-1-38-0c-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 05 51 0F 8F 00 00/39 00 00 00 00 00 05 51 0F 8F 00 00/g' $dts_source/dsi-panel-j1s-42-02-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 05 51 0F 8F 00 00/39 00 00 00 00 00 05 51 0F 8F 00 00/g' $dts_source/dsi-panel-j1s-42-02-0a-mp-dsc-cmd.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 05 51 0F 8F 00 00/39 00 00 00 00 00 05 51 0F 8F 00 00/g' $dts_source/dsi-panel-j2-mp-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 05 51 0F 8F 00 00/39 00 00 00 00 00 05 51 0F 8F 00 00/g' $dts_source/dsi-panel-j2-p2-1-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 00 00 00 00 00 05 51 0F 8F 00 00/39 00 00 00 00 00 05 51 0F 8F 00 00/g' $dts_source/dsi-panel-j2s-mp-42-02-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 00 00/39 01 00 00 00 00 03 51 00 00/g' $dts_source/dsi-panel-j2-38-0c-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 00 00/39 01 00 00 00 00 03 51 00 00/g' $dts_source/dsi-panel-j2-38-0c-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 03 FF/39 01 00 00 00 00 03 51 03 FF/g' $dts_source/dsi-panel-j11-38-08-0a-fhd-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 03 FF/39 01 00 00 00 00 03 51 03 FF/g' $dts_source/dsi-panel-j9-38-0a-0a-fhd-video.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 07 FF/39 01 00 00 00 00 03 51 07 FF/g' $dts_source/dsi-panel-j1u-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 07 FF/39 01 00 00 00 00 03 51 07 FF/g' $dts_source/dsi-panel-j2-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 07 FF/39 01 00 00 00 00 03 51 07 FF/g' $dts_source/dsi-panel-j2-p1-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 0F FF/39 01 00 00 00 00 03 51 0F FF/g' $dts_source/dsi-panel-j1u-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 0F FF/39 01 00 00 00 00 03 51 0F FF/g' $dts_source/dsi-panel-j2-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 03 51 0F FF/39 01 00 00 00 00 03 51 0F FF/g' $dts_source/dsi-panel-j2-p1-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 05 51 07 FF 00 00/39 01 00 00 00 00 05 51 07 FF 00 00/g' $dts_source/dsi-panel-j1s-42-02-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 05 51 07 FF 00 00/39 01 00 00 00 00 05 51 07 FF 00 00/g' $dts_source/dsi-panel-j1s-42-02-0a-mp-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 05 51 07 FF 00 00/39 01 00 00 00 00 05 51 07 FF 00 00/g' $dts_source/dsi-panel-j2-mp-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 05 51 07 FF 00 00/39 01 00 00 00 00 05 51 07 FF 00 00/g' $dts_source/dsi-panel-j2-p2-1-42-02-0b-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 00 00 05 51 07 FF 00 00/39 01 00 00 00 00 05 51 07 FF 00 00/g' $dts_source/dsi-panel-j2s-mp-42-02-0a-dsc-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 01 00 03 51 03 FF/39 01 00 00 01 00 03 51 03 FF/g' $dts_source/dsi-panel-j11-38-08-0a-fhd-cmd.dtsi
+    sed -i 's/\/\/39 01 00 00 11 00 03 51 03 FF/39 01 00 00 11 00 03 51 03 FF/g' $dts_source/dsi-panel-j2-p2-1-38-0c-0a-dsc-cmd.dtsi
+}
 
 # Post to CI channel
 function tg_post_msg() {
@@ -107,9 +178,8 @@ function tg_post_msg() {
 <b>DEVICE</b> : <code>${DEVICE}</code>
 <b>COMPILER</b> : <code>${COMPILER}</code>
 <b>KERNEL VERSION</b> : <code>${KERNELVER}</code>
-
 <i>Build started on Drone Cloud!</i>
-<a href='https://cloud.drone.io/Rmx1921/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}'>Check the build status here</a>" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
+<a href='https://cloud.drone.io/UtsavBalar1231/kernel_xiaomi_sm8250/${DRONE_BUILD_NUMBER}'>Check the build status here</a>" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
 }
 
 function tg_post_error() {
