@@ -186,7 +186,7 @@ zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
 RESPONSE=$(curl -# -F "name=${ZIPNAME}" -F "file=@${ZIPNAME}" -u :"${PD_API_KEY}" https://pixeldrain.com/api/file)
 FILEID=$(echo "${RESPONSE}" | grep -Po '(?<="id":")[^"]*')
 
-#CHECKER=$(find ./ -maxdepth 1 -type f -name "${ZIPNAME}" -printf "%s\n")
+CHECKER=$(find ./ -maxdepth 1 -type f -name "${ZIPNAME}" -printf "%s\n")
 CHECKER=$(ls -l ${ZIPNAME} | awk '{print $5}')
 if (($((CHECKER / 1048576)) > 5)); then
     curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="✅ Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for Rmx1921" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
