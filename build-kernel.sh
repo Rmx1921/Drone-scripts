@@ -134,7 +134,6 @@ function tg_post_msg() {
 <b>DEVICE</b> : <code>${DEVICE}</code>
 <b>COMPILER</b> : <code>${COMPILER}</code>
 <b>KERNEL VERSION</b> : <code>${KERNELVER}</code>
-
 <i>Build started on Drone Cloud!</i>
 <a href='https://cloud.drone.io/UtsavBalar1231/kernel_xiaomi_sm8250/${DRONE_BUILD_NUMBER}'>Check the build status here</a>" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
 }
