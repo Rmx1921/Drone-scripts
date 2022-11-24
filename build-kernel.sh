@@ -32,8 +32,8 @@ else
 fi
 # Export Build username
 export KBUILD_BUILD_USER="Viciouspup"
-export KBUILD_BUILD_HOST="root
 export DEVICE="Rmx1921"
+export KBUILD_BUILD_HOST="root
 
 # Enviromental Variables
 DATE=$(date +"%d.%m.%y")
@@ -62,7 +62,7 @@ fi
 # Post to CI channel
 function tg_post_msg() {
 #curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="<code>SPIRAL</code>
+curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="SPIRAL"
 <b>BUILD TYPE</b> : <code>${TYPE}</code>
 <b>DEVICE</b> : <code>Realme XT(RMX1921)</code>
 <b>COMPILER</b> : <code>${COMPILER}</code>
