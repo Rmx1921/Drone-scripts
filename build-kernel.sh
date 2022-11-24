@@ -63,11 +63,11 @@ fi
 function tg_post_msg() {
 #curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
 curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="<code>SPIRAL</code>
-Build: <code>${TYPE}</code>
-Device: <code>Realme XT(RMX1921)</code>
-Compiler: <code>${COMPILER}</code>
-Branch: <code>$(git rev-parse --abbrev-ref HEAD)</code>
-Commit: <code>$MESSAGE</code>
+<b>BUILD TYPE</b> : <code>${TYPE}</code>
+<b>DEVICE</b> : <code>Realme XT(RMX1921)</code>
+<b>COMPILER</b> : <code>${COMPILER}</code>
+<b>Branch<b> : <code>$(git rev-parse --abbrev-ref HEAD)</code>
+<b>Commit<b> : <code>$MESSAGE</code>
 
 <i>Build started on Drone Cloud...</i>
 Check the build status here: https://cloud.drone.io/Rmx1921/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
