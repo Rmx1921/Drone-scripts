@@ -1,87 +1,73 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2199
+# shellcheck disable=SC2086
 # shellcheck source=/dev/null
 #
-# Copyright (c) 2020 UtsavBalar1231 <utsavbalar1231@gmail.com>
+# Copyright (C) 2020-22 UtsavBalar1231 <utsavbalar1231@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
 #    http://www.apache.org/licenses/LICENSE-2.0
-
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd /drone/src/
+cd /drone/src/ || exit
 
-# Export Cross Compiler name
-if [[ "$@" =~ "benzoclang"* ]]; then
-	export COMPILER="BenzoClang-12.0"
-elif [[ "$@" =~ "proton"* ]]; then
+HOME="/drone/src"
+
+if [[ "$@" =~ "proton"* ]]; then
 	if [[ "$@" =~ "lto"* ]]; then
-		export COMPILER="ProtonClang-12.0 LTO"
+		export COMPILER="ProtonClang-13.0 LTO"
 	else
-		export COMPILER="ProtonClang-12.0"
-	fi
+		export COMPILER="ProtonClang-13.0
+fi
 else
 	export COMPILER="ProtonClang-12.0"
-fi
-# Export Build username
-export KBUILD_BUILD_USER="Viciouspup"
-export DEVICE="Rmx1921"
-export KBUILD_BUILD_HOST="root
 
+#
 # Enviromental Variables
+#
+
+# Set the current branch name
+BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+
+# Set the last commit sha
+COMMIT=$(git rev-parse --short HEAD)
+
+# Set current date
 DATE=$(date +"%d.%m.%y")
-HOME="/drone/src/"
+
+# Set Kernel Version
+KERNELVER=$(make kernelversion)
+
+# Set our directory
 OUT_DIR=out/
+
+CSUM=$(cksum <<<${COMMIT} | cut -f 1 -d ' ')
+
+# Select LTO or non LTO builds
 if [[ "$@" =~ "lto"* ]]; then
 	VERSION="SPIRA-${TYPE}-LTO${DRONE_BUILD_NUMBER}-${DATE}"
 else
 	VERSION="SPIRAL-${TYPE}-${DRONE_BUILD_NUMBER}-${DATE}"
 fi
-BRANCH=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-KERNEL_LINK=https://github.com/viciouspup/kernel_realme_sdm710.git
-REF=`echo "$BRANCH" | grep -Eo "[^ /]+\$"`
-AUTHOR=`git log $BRANCH -1 --format="%an"`
-COMMIT=`git log $BRANCH -1 --format="%h / %s"`
-MESSAGE="$AUTHOR@$REF: $KERNEL_LINK/commit/$COMMIT"
+
 # Export Zip name
 export ZIPNAME="${VERSION}.zip"
 
 # How much kebabs we need? Kanged from @raphielscape :)
 if [[ -z "${KEBABS}" ]]; then
-	COUNT="$(grep -c '^processor' /proc/cpuinfo)"
-	export KEBABS="$((COUNT * 2))"
+    COUNT="$(grep -c '^processor' /proc/cpuinfo)"
+    export KEBABS="$((COUNT * 2))"
 fi
 
-# Post to CI channel
-function tg_post_msg() {
-#curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="SPIRAL"
-<b>BUILD TYPE</b> : <code>${TYPE}</code>
-<b>DEVICE</b> : <code>Realme XT(RMX1921)</code>
-<b>COMPILER</b> : <code>${COMPILER}</code>
-<b>Branch<b> : <code>$(git rev-parse --abbrev-ref HEAD)</code>
-<b>Commit<b> : <code>$MESSAGE</code>
-
-<i>Build started on Drone Cloud...</i>
-Check the build status here: https://cloud.drone.io/Rmx1921/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
-curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
-}
-
-function tg_post_error() {
-curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="Error in ${DEVICE}: $1 build!!" -d chat_id="${CI_CHANNEL_ID}"
-curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/build.log" https://api.telegram.org/bot"${BOT_API_KEY}"/sendDocument
-exit 1
-}
-
 START=$(date +"%s")
-# Proton
 if [[ "$@" =~ "proton"* ]]; then
 	# Make defconfig
 	make ARCH=arm64 \
@@ -140,31 +126,43 @@ else
 		-j${KEBABS}
 fi
 
-END=$(date +"%s")
-DIFF=$(( END - START))
-# Import Anykernel3 folder
-#cd libufdt-master-utils/src
-#python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
-cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel/
-#cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
+# Post to CI channel
+function tg_post_msg() {
+    # curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendAnimation -d animation="https://media.giphy.com/media/PPgZCwZPKrLcw75EG1/giphy.gif" -d chat_id="${CI_CHANNEL_ID}"
+    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="<code>IMMENSITY Automated build</code>
+<b>BUILD TYPE</b> : <code>${TYPE}</code>
+<b>DEVICE</b> : <code>${DEVICE}</code>
+<b>COMPILER</b> : <code>${COMPILER}</code>
+<b>KERNEL VERSION</b> : <code>${KERNELVER}</code>
 
-cd anykernel
-zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
+<i>Build started on Drone Cloud!</i>
+<a href='https://cloud.drone.io/UtsavBalar1231/kernel_xiaomi_sm8250/${DRONE_BUILD_NUMBER}'>Check the build status here</a>" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
+}
+
+function tg_post_error() {
+    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="Error in ${DEVICE}: $1 build!!" -d chat_id="${CI_CHANNEL_ID}"
+    curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/build.log" https://api.telegram.org/bot"${BOT_API_KEY}"/sendDocument
+    exit 1
+}
+
+END=$(date +"%s")
+DIFF=$((END - START))
+
+cd anykernel || exit
+zip -r9 "${ZIPNAME}" ./* -x .git .gitignore ./*.zip
 
 RESPONSE=$(curl -# -F "name=${ZIPNAME}" -F "file=@${ZIPNAME}" -u :"${PD_API_KEY}" https://pixeldrain.com/api/file)
 FILEID=$(echo "${RESPONSE}" | grep -Po '(?<="id":")[^"]*')
 
 CHECKER=$(find ./ -maxdepth 1 -type f -name "${ZIPNAME}" -printf "%s\n")
-CHECKER=$(ls -l ${ZIPNAME} | awk '{print $5}')
 if (($((CHECKER / 1048576)) > 5)); then
-    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="✅ Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for Rmx1921" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
-	curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="Kernel build link: https://pixeldrain.com/u/$FILEID" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
-    #curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot${BOT_API_KEY}/sendDocument
+    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="✅ Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for ${DEVICE}" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
+    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="Kernel build link: https://pixeldrain.com/u/$FILEID" -d chat_id="${CI_CHANNEL_ID}" -d parse_mode=HTML
+    #    curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot"${BOT_API_KEY}"/sendDocument
 else
-	curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Build Error!!" -d chat_id=${CI_CHANNEL_ID}
-	exit 1;
+    tg_post_error
 fi
-cd $(pwd)
+cd "$(pwd)" || exit
 
 # Cleanup
 rm -fr anykernel/
