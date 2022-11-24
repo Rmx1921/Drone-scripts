@@ -67,52 +67,12 @@ Compiler: <code>${COMPILER}</code>
 Branch: <code>$(git rev-parse --abbrev-ref HEAD)</code>
 Commit: <code>$MESSAGE</code>
 <i>Build started on Drone Cloud...</i>
-Check the build status here: https://cloud.drone.io/viciouspup/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
+Check the build status here: https://cloud.drone.io/Rmx1921/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
 curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
 
 START=$(date +"%s")
-# BenzoClang
-if [[ "$@" =~ "benzoclang"* ]]; then
-	# Make defconfig
-	make ARCH=arm64 \
-		O=${OUT_DIR} \
-		raphael_defconfig \
-		-j${KEBABS}
-
-	# Enable LLD
-	scripts/config --file ${OUT_DIR}/.config \
-		-d LTO \
-		-d LTO_CLANG \
-		-d SHADOW_CALL_STACK \
-		-e TOOLS_SUPPORT_RELR \
-		-e LD_LLD
-	# Make olddefconfig
-	cd ${OUT_DIR}
-	make O=${OUT_DIR} \
-		ARCH=arm64 \
-		olddefconfig \
-		-j${KEBABS}
-	cd ../
-	# Set compiler Path
-	PATH=${HOME}/clang/bin/:${HOME}/arm64-gcc/bin/:${HOME}/arm32-gcc/bin/:$PATH
-	make ARCH=arm64 \
-		O=${OUT_DIR} \
-		CC="clang" \
-		LD="ld.lld" \
-		AR="llvm-ar" \
-		NM="llvm-nm" \
-		HOSTCC="clang" \
-		HOSTLD="ld.lld" \
-		HOSTCXX="clang++" \
-		STRIP="llvm-strip" \
-		OBJCOPY="llvm-objcopy" \
-		OBJDUMP="llvm-objdump" \
-		READELF="llvm-readelf" \
-		CLANG_TRIPLE="aarch64-linux-gnu-" \
-		CROSS_COMPILE="aarch64-linux-android-" \
-		CROSS_COMPILE_ARM32="arm-linux-androideabi-" \
-		-j${KEBABS}
-elif [[ "$@" =~ "proton"* ]]; then
+# Proton
+if [[ "$@" =~ "proton"* ]]; then
 	# Make defconfig
 	make ARCH=arm64 \
 		O=${OUT_DIR} \
@@ -175,8 +135,6 @@ DIFF=$(( END - START))
 # Import Anykernel3 folder
 #cd libufdt-master-utils/src
 #python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
-cd ..
-cd ..
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel/
 #cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
 
