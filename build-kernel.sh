@@ -129,7 +129,7 @@ fi
 # Post to CI channel
 function tg_post_msg() {
     # curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendAnimation -d animation="https://media.giphy.com/media/PPgZCwZPKrLcw75EG1/giphy.gif" -d chat_id="${CI_CHANNEL_ID}"
-    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text="<code>IMMENSITY Automated build</code>
+    curl -s -X POST https://api.telegram.org/bot"${BOT_API_KEY}"/sendMessage -d text=SPIRAL
 <b>BUILD TYPE</b> : <code>${TYPE}</code>
 <b>DEVICE</b> : <code>${DEVICE}</code>
 <b>COMPILER</b> : <code>${COMPILER}</code>
