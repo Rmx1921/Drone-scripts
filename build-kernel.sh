@@ -59,8 +59,7 @@ if [[ -z "${KEBABS}" ]]; then
 fi
 
 # Post to CI channel
-#curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=338913217
-curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="<code>SPIRAL</code>
+curl -s -X POST https://api.telegram.org/bot5809013425:AAFw9Vjp2LQSS-bh8Sb4kX2jWIiaURf1D48/sendMessage -d text="<code>SPIRAL</code>
 Build: <code>${TYPE}</code>
 Device: <code>Realme XT(RMX1921)</code>
 Compiler: <code>${COMPILER}</code>
@@ -68,7 +67,7 @@ Branch: <code>$(git rev-parse --abbrev-ref HEAD)</code>
 Commit: <code>$MESSAGE</code>
 <i>Build started on Drone Cloud...</i>
 Check the build status here: https://cloud.drone.io/viciouspup/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=338913217 -d parse_mode=HTML
-curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=338913217 -d parse_mode=HTML
+curl -s -X POST https://api.telegram.org/bot5809013425:AAFw9Vjp2LQSS-bh8Sb4kX2jWIiaURf1D48/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=338913217 -d parse_mode=HTML
 
 START=$(date +"%s")
 # BenzoClang
@@ -173,21 +172,16 @@ fi
 END=$(date +"%s")
 DIFF=$(( END - START))
 # Import Anykernel3 folder
-# cd libufdt-master-utils/src
-#python mkdtboimg.py create /drone/src/out/arch/arm64/boot/dtbo.img /drone/src/out/arch/arm64/boot/dts/qcom/*.dtbo
-#cd ..
-#cd ..
 cp $(pwd)/${OUT_DIR}/arch/arm64/boot/Image.gz-dtb $(pwd)/anykernel/
-#cp $(pwd)/${OUT_DIR}/arch/arm64/boot/dtbo.img $(pwd)/anykernel/
 
 cd anykernel
 zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
 CHECKER=$(ls -l ${ZIPNAME} | awk '{print $5}')
 if (($((CHECKER / 1048576)) > 5)); then
-	curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for SPIRAL" -d chat_id=338913217 -d parse_mode=HTML
-	curl -F chat_id="338913217" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendDocument
+	curl -s -X POST https://api.telegram.org/bot5809013425:AAFw9Vjp2LQSS-bh8Sb4kX2jWIiaURf1D48/sendMessage -d text="Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for SPIRAL" -d chat_id=338913217 -d parse_mode=HTML
+	curl -F chat_id="338913217" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot5809013425:AAFw9Vjp2LQSS-bh8Sb4kX2jWIiaURf1D48/sendDocument
 else
-	curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Build Error!!" -d chat_id=338913217
+	curl -s -X POST https://api.telegram.org/bot5809013425:AAFw9Vjp2LQSS-bh8Sb4kX2jWIiaURf1D48/sendMessage -d text="Build Error!!" -d chat_id=338913217
 	exit 1;
 fi
 cd $(pwd)
