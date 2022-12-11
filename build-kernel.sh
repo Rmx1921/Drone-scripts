@@ -20,18 +20,18 @@ cd /drone/src/
 
 # Export Cross Compiler name
 if [[ "$@" =~ "benzoclang"* ]]; then
-	export COMPILER="BenzoClang-12.0"
+	export COMPILER="BenzoClang-13.0"
 elif [[ "$@" =~ "proton"* ]]; then
 	if [[ "$@" =~ "lto"* ]]; then
-		export COMPILER="ProtonClang-12.0 LTO"
+		export COMPILER="ProtonClang-13.0 LTO"
 	else
-		export COMPILER="ProtonClang-15.0"
+		export COMPILER="ProtonClang-13.0"
 	fi
 else
-	export COMPILER="ProtonClang-15.0"
+	export COMPILER="ProtonClang-13.0"
 fi
 # Export Build username
-export KBUILD_BUILD_USER="Viciouspup"
+export KBUILD_BUILD_USER="rmx1921"
 export KBUILD_BUILD_HOST="DroneCI"
 
 # Enviromental Variables
@@ -59,7 +59,7 @@ if [[ -z "${KEBABS}" ]]; then
 fi
 
 # Post to CI channel
-#curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=${CI_CHANNEL_ID}
+#curl -s -X POST https://api.telegram.org/bot${BOT_API_KEY}/sendPhoto -d photo=https://github.com/UtsavBalar1231/xda-stuff/raw/master/banner.png -d chat_id=338913217
 curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="<code>SPIRAL</code>
 Build: <code>${TYPE}</code>
 Device: <code>Realme XT(RMX1921)</code>
@@ -67,7 +67,7 @@ Compiler: <code>${COMPILER}</code>
 Branch: <code>$(git rev-parse --abbrev-ref HEAD)</code>
 Commit: <code>$MESSAGE</code>
 <i>Build started on Drone Cloud...</i>
-Check the build status here: https://cloud.drone.io/viciouspup/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=${CI_CHANNEL_ID} -d parse_mode=HTML
+Check the build status here: https://cloud.drone.io/viciouspup/kernel_realme_sdm710/${DRONE_BUILD_NUMBER}" -d chat_id=338913217 -d parse_mode=HTML
 curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Build started for revision ${DRONE_BUILD_NUMBER}" -d chat_id=338913217 -d parse_mode=HTML
 
 START=$(date +"%s")
@@ -185,7 +185,7 @@ zip -r9 ${ZIPNAME} * -x .git .gitignore *.zip
 CHECKER=$(ls -l ${ZIPNAME} | awk '{print $5}')
 if (($((CHECKER / 1048576)) > 5)); then
 	curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Kernel compiled successfully in $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds for SPIRAL" -d chat_id=338913217 -d parse_mode=HTML
-	curl -F chat_id="${CI_CHANNEL_ID}" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendDocument
+	curl -F chat_id="338913217" -F document=@"$(pwd)/${ZIPNAME}" https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendDocument
 else
 	curl -s -X POST https://api.telegram.org/bot1445481247:AAFmjxDbbXAEFjAgYdyeVj6ZKAq-obPV_64/sendMessage -d text="Build Error!!" -d chat_id=338913217
 	exit 1;
